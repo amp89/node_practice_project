@@ -1,0 +1,29 @@
+{
+  "name": "node_practice",
+  "version": "1.0.0",
+  "description": "practicing node...",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build":"babel src -d lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amp89/node_practice_project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amp89/node_practice_project/issues"
+  },
+  "homepage": "https://github.com/amp89/node_practice_project#readme",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "mongodb": "^2.2.31"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0"
+  }
+}
