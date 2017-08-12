@@ -4,9 +4,11 @@ import path from 'path';
 
 import MongoClient from 'mongodb';
 
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
+import assert from 'assert';
 
-const config = require('./config');
+import config from './config';
+
 const server = express();
 
 server.set('view engine','ejs');
@@ -23,7 +25,13 @@ server.get("/",(req,res) => {
 
 
 let db;
+MongoClient.connect(config.mongodbUri, (err,d) => {
 
+    assert.equal(null,err);
+    console.log("Mongo is connected!");
+    db=d;
+
+})
 
 ///////////ROUTES//////////////////////////////
 
@@ -95,7 +103,6 @@ server.post("/delete",(req,res) => {
 
 
 
-//server.listen(config.port, config.host, ()=>{
-server.listen(8080, '0.0.0.0', ()=>{
+server.listen(config.port, config.host, ()=>{
     console.info("Listening on ",config.host," PORT ",config.port);
 });
