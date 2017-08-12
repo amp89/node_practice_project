@@ -9,7 +9,7 @@
     <ul>
     <% for(let i =0; i < list.length; i++){%>
             <li>
-                <%- list[i].title %> <form method="post" action="/delete"><input name='id' type="hidden" value="<%- list[i].id %>"><input type=submit value="Delete This"></form>
+                <%- list[i].title %> <form method="post" action="/delete"><input name='id' type="hidden" value="<%- list[i]._id %>"><input type=submit value="Delete This"></form>
             </li>
     <% } %>
     </ul>

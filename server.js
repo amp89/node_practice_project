@@ -2,7 +2,7 @@
 import express from 'express';
 import path from 'path';
 
-import MongoClient from 'mongodb';
+import {MongoClient,ObjectId} from 'mongodb';
 
 import bodyParser from 'body-parser';
 import assert from 'assert';
@@ -37,68 +37,50 @@ MongoClient.connect(config.mongodbUri, (err,d) => {
 
 server.get("/all",(req,res) => {
 
-    res.render("all",{list:[
-            {
-                id:1,
-                title:'first'
-            },
+    db.collection("test").find({}).toArray((err,data) => {
+        assert.equal(null,err);
+        console.log(data);
+        let all_results = data;
+        res.render("all",{list:all_results});
+    });
 
-            {
-                id:2,
-                title:'second'
-            },
-
-            {
-                id:3,
-                title:'third'
-            },
-
-        ]});
 });
 
 server.post("/add",(req,res) => {
     let title = req.body.title;
     let content = req.body.content;
-    console.log("Title: ",title,", ","Content: ",content)
-    res.render("all",{list:[
-            {
-                id:1,
-                title:'first'
-            },
+    db.collection('test').insertOne({'title':title,'content':content},function(err,r){
+        assert.equal(err,null);
+        assert.equal(1,r.insertedCount);
+        console.log("Inserted ",r.insertedCount," record(s)");
+        db.collection("test").find({}).toArray((err,data) => {
+            assert.equal(null,err);
+            console.log(data);
+            let all_results = data;
+            res.render("all",{list:all_results});
+        });
+    })
 
-            {
-                id:2,
-                title:'second'
-            },
-
-            {
-                id:3,
-                title:'third'
-            },
-
-        ]});
 });
 
 server.post("/delete",(req,res) => {
     let idToDelete = req.body.id;
     console.log("ID: ",idToDelete);
-    res.render("all",{list:[
-            {
-                id:1,
-                title:'first'
-            },
+    db.collection("test").deleteOne({_id:ObjectId(idToDelete)},(err,ref) => {
+        assert.equal(err,null);
+        console.log("Deleted rec id: ",ref._id);
 
-            {
-                id:2,
-                title:'second'
-            },
+        db.collection("test").find({}).toArray((err,data) => {
+            assert.equal(null,err);
+            console.log(data);
+            let all_results = data;
+            res.render("all",{list:all_results});
+        });
 
-            {
-                id:3,
-                title:'third'
-            },
+    })
 
-        ]});
+
+
 });
 
 
