@@ -4,12 +4,15 @@ import path from 'path';
 
 import MongoClient from 'mongodb';
 
+import bodyParser from 'body-parser'
+
 const config = require('./config');
 const server = express();
 
 server.set('view engine','ejs');
 server.set('views',path.join(__dirname,'views'));
 
+server.use(bodyParser.urlencoded({extended:true}));
 
 server.get("/",(req,res) => {
 
@@ -19,14 +22,80 @@ server.get("/",(req,res) => {
 });
 
 
+let db;
+
+
+///////////ROUTES//////////////////////////////
+
 server.get("/all",(req,res) => {
 
-    res.render("all",{list:['list','of','things']});
+    res.render("all",{list:[
+            {
+                id:1,
+                title:'first'
+            },
+
+            {
+                id:2,
+                title:'second'
+            },
+
+            {
+                id:3,
+                title:'third'
+            },
+
+        ]});
 });
+
+server.post("/add",(req,res) => {
+    let title = req.body.title;
+    let content = req.body.content;
+    console.log("Title: ",title,", ","Content: ",content)
+    res.render("all",{list:[
+            {
+                id:1,
+                title:'first'
+            },
+
+            {
+                id:2,
+                title:'second'
+            },
+
+            {
+                id:3,
+                title:'third'
+            },
+
+        ]});
+});
+
+server.post("/delete",(req,res) => {
+    let idToDelete = req.body.id;
+    console.log("ID: ",idToDelete);
+    res.render("all",{list:[
+            {
+                id:1,
+                title:'first'
+            },
+
+            {
+                id:2,
+                title:'second'
+            },
+
+            {
+                id:3,
+                title:'third'
+            },
+
+        ]});
+});
+
 
 
 //server.listen(config.port, config.host, ()=>{
 server.listen(8080, '0.0.0.0', ()=>{
     console.info("Listening on ",config.host," PORT ",config.port);
-
 });
