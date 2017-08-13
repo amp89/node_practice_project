@@ -1,5 +1,6 @@
 const env = process.env;
 
+
 export default {
     mgp:"lakjsdf0898Y987typuih%967tuy$E^%*R&FTG*YUHIO&6re5423$#65d",
     mus:"npp",
