@@ -68,7 +68,30 @@ server.post("/delete",(req,res) => {
     console.log("ID: ",idToDelete);
     db.collection("test").deleteOne({_id:ObjectId(idToDelete)},(err,ref) => {
         assert.equal(err,null);
-        console.log("Deleted rec id: ",ref._id);
+        console.log("Deleted rec.");
+
+        db.collection("test").find({}).toArray((err,data) => {
+            assert.equal(null,err);
+            console.log(data);
+            let all_results = data;
+            res.render("all",{list:all_results});
+        });
+
+    })
+
+
+
+});
+
+
+server.post("/update",(req,res) => {
+    let idToUpdate = req.body.id;
+    let newTitle = req.body.title;
+
+    console.log("ID: ",idToUpdate);
+    db.collection("test").updateOne({_id:ObjectId(idToUpdate)},{$set:{title:newTitle}},(err,ref) => {
+        assert.equal(err,null);
+        console.log("updated rec id: ",ref._id);
 
         db.collection("test").find({}).toArray((err,data) => {
             assert.equal(null,err);
