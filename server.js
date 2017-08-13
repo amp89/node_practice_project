@@ -3,7 +3,7 @@ import express from 'express';
 import path from 'path';
 
 import {MongoClient,ObjectId} from 'mongodb';
-
+import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import assert from 'assert';
 
@@ -17,7 +17,6 @@ server.set('views',path.join(__dirname,'views'));
 server.use(bodyParser.urlencoded({extended:true}));
 
 server.get("/",(req,res) => {
-
     //res.send("hello friend");
     res.render("index",{greeting:"Hello Friend!"});
 
@@ -25,6 +24,8 @@ server.get("/",(req,res) => {
 
 
 let db;
+
+/*
 MongoClient.connect(config.mongodbUri, (err,d) => {
 
     assert.equal(null,err);
@@ -32,7 +33,7 @@ MongoClient.connect(config.mongodbUri, (err,d) => {
     db=d;
 
 })
-
+*/
 ///////////ROUTES//////////////////////////////
 
 server.get("/all",(req,res) => {
