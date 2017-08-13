@@ -6,13 +6,33 @@
 </head>
 
 <body>
+
+
+    <h1>Horrible, ugly, unsecure chat</h1>
+    <h5>You can't even tell who anyone is for sure</h5>
+    <h5>But at least I got to practice building websockets, which is the whole point</h5>
+
+    Your name: <input type="text" id="name">
+    <div>
+        <ul id="chat-window">
+
+        </ul>
+
+    </div>
+    <input type="text" id="message"><button id="send">Send.</button>
+
+
+
+
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io('http://localhost:8080');
       socket.on('connect', function(){
           console.log("connected...");
       });
-      
+
       socket.on('event', function(data){
           console.log("event..");
           console.log(data);
@@ -22,6 +42,26 @@
           console.log("test-data event..");
           console.log(data);
       });
+
+
+      socket.on('chat', function(data){
+          console.log("chat event..");
+          console.log(data);
+          var newMsg = document.createElement("li");
+          newMsg.innerHTML = "" + data.username + " said \"" + data.message + "\"";
+          document.getElementById("chat-window").appendChild(newMsg);
+
+      });
+
+      document.getElementById("send").onclick = function(){
+          var username = document.getElementById("name").value;
+          var message = document.getElementById("message").value;
+          console.log("USR: ",username," MSG: ",message);
+          socket.emit('chat',{'username':username,'message':message});
+          document.getElementById("message").value = "";
+      };
+
+
 
       socket.on('disconnect', function(){
           console.log("bye");

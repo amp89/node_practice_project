@@ -101,5 +101,13 @@ io.on('connection',(s) => {
         console.log("recieved on test-data: ",data);
         s.emit("test-data","I recieved your test data \""+data+"\"");
     });
+
+
+    s.on("chat",(data)=>{
+        console.log("recieved on chat: ",data);
+        s.emit("chat",{message:data.message,username:data.username});
+    });
+
+
     s.on("disconnect",()=>{console.log("User disconnected")});
 });
