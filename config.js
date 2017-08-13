@@ -1,11 +1,5 @@
 const env = process.env;
 
-//export const nodeEnv = env.NODE_ENV || 'development';
-
-
-var mgp = "lakjsdf0898Y987typuih%967tuy$E^%*R&FTG*YUHIO&6re5423$#65d";
-var mus = "npp";
-
 export default {
     mgp:"lakjsdf0898Y987typuih%967tuy$E^%*R&FTG*YUHIO&6re5423$#65d",
     mus:"npp",

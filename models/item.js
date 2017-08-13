@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import config from '../config';
 
 let db;
-//connect
 mongoose.connect(config.mongodbUri,{user:config.mus,pwd:config.mgp,useMongoClient:true});
 mongoose.Promise = global.Promise
 db = mongoose.connection;
