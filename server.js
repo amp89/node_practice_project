@@ -10,7 +10,12 @@ import config from './config';
 
 import Item from './models/item'
 
+//import io from 'socket.io';
+
+
 const server = express();
+
+
 
 server.set('view engine','ejs');
 server.set('views',path.join(__dirname,'views'));
@@ -77,6 +82,24 @@ server.post("/update",(req,res) => {
 
 
 
-server.listen(config.port, config.host, ()=>{
+const serverObj = server.listen(config.port, config.host, ()=>{
     console.info("Listening on ",config.host," PORT ",config.port);
+});
+
+const io = require('socket.io')(serverObj);
+
+///////////////////SOCKET STUFF////////////////////////////////////////////////
+
+server.get("/socket-test",(req,res) => {
+    res.render("socket-test")
+
+});
+
+io.on('connection',(s) => {
+    console.log("Someone has connected to a websocket.");
+    s.on("test-data",(data)=>{
+        console.log("recieved on test-data: ",data);
+        s.emit("test-data","I recieved your test data \""+data+"\"");
+    });
+    s.on("disconnect",()=>{console.log("User disconnected")});
 });
