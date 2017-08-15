@@ -105,6 +105,7 @@ io.on('connection',(s) => {
 
     s.on("chat",(data)=>{
         console.log("recieved on chat: ",data);
+        s.broadcast.emit("chat",{message:data.message,username:data.username});
         s.emit("chat",{message:data.message,username:data.username});
     });
 
