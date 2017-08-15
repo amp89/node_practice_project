@@ -114,6 +114,14 @@ io.on('connection',(s) => {
     s.on("disconnect",()=>{console.log("User disconnected")});
 });
 
+
+/////////////////BCRYPT STUFF///////////////////////////////////
+
+import bcrypt from 'bcrypt';
+
+const saltRounds = 10;
+
+
 /////////////////PASSPORT STUFF/////////////////////////////////
 
 import passport from 'passport';
@@ -121,39 +129,55 @@ let LocalStrategy = require('passport-local').Strategy
 server.use(passport.initialize());
 server.use(passport.session());
 
+passport.serializeUser(function(user,done){
+    done(null,user._id);
+})
+
+passport.deserializeUser(function(id,done){
+    User.findById(id, (err,user) => {
+        done(err,user);
+    })
+})
 
 passport.use(new LocalStrategy(
     (username,password,done) => {
-        console.log(">>>> Username, ",username," Password, ",password);
-
-        User.findOne({username:username},(err,user) => {
-            if(err){
-                console.log(err);
-                return done(err);
-            };
-            if(!user){
-                console.log("no user");
-                return done(null,false,{message:"bad user"});
-            };
-            if(user.password != password){
-                console.log("bad pwd");
-                return done(null,false,{message:"bad pwd"})
-            };
-            return done(null,user);
+        bcrypt.genSalt(saltRounds,function(err,salt){
+            bcrypt.hash(password,salt,(err,hash)=>{
+                console.log("OHHHH PUT ME IN THE DB: ",hash);
+            });
         });
 
-    }
+            User.findOne({username:username},(err,user) => {
+                if(err){
+                    console.log(err);
+                    return done(err);
+                };
+                if(!user){
+                    console.log("no user");
+                    return done(null,false,{message:"bad user"});
+                };
+                //if(user.password != hash){
+                console.log("PWD:",password);
+                console.log("HASH:",user.password);
+                bcrypt.compare(password,user.password,(err,res) =>{
+                    console.log("bad pwd, ",err);
+                    if(!res){
+                            return done(null,false,{message:"bad pwd"});
+                    }
+                });
+                return done(null,user);
+
+                });
 
 
-));
 
+
+}));
 
 server.get("/login",(req,res) => {
     res.render("login");
 
 });
-
-
 
 server.post("/login",passport.authenticate("local",{
     successRedirect: "/all",
