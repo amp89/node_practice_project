@@ -9,6 +9,7 @@ import assert from 'assert';
 import config from './config';
 
 import Item from './models/item'
+import User from './models/user'
 
 //import io from 'socket.io';
 
@@ -112,3 +113,80 @@ io.on('connection',(s) => {
 
     s.on("disconnect",()=>{console.log("User disconnected")});
 });
+
+/////////////////PASSPORT STUFF/////////////////////////////////
+
+import passport from 'passport';
+let LocalStrategy = require('passport-local').Strategy
+server.use(passport.initialize());
+server.use(passport.session());
+
+
+passport.use(new LocalStrategy(
+    (username,password,done) => {
+        console.log(">>>> Username, ",username," Password, ",password);
+
+        User.findOne({username:username},(err,user) => {
+            if(err){
+                console.log(err);
+                return done(err);
+            };
+            if(!user){
+                console.log("no user");
+                return done(null,false,{message:"bad user"});
+            };
+            if(user.password != password){
+                console.log("bad pwd");
+                return done(null,false,{message:"bad pwd"})
+            };
+            return done(null,user);
+        });
+
+    }
+
+
+));
+
+
+server.get("/login",(req,res) => {
+    res.render("login");
+
+});
+
+
+
+server.post("/login",passport.authenticate("local",{
+    successRedirect: "/all",
+    failureRedirect: "/login",
+    failureFlash:false,
+    session:true
+}));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
