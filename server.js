@@ -16,21 +16,43 @@ import User from './models/user'
 
 const server = express();
 
+/*
+mongoose.connect();
+
+server.use(express.session({
+    secret: 'alksjdflsadkjflasdfkjlsadfj',
+    cookie: {maxAge:"99999"},
+    store: new (require('express-sessions'))({
+        storage:'mongodb'
+    })
 
 
+}));
+
+*/
 server.set('view engine','ejs');
 server.set('views',path.join(__dirname,'views'));
 
 
 server.use(bodyParser.urlencoded({extended:true}));
 
+
+
+
 server.get("/",(req,res) => {
+    console.log("user:, ",req.user);
     res.redirect("/all");
 });
 
 
 
 server.get("/all",(req,res) => {
+    console.log("/all!!!!!");
+    //console.log("req: ",req);
+    console.log("req.user: ",req.user);
+    console.log("req.session: ",req.session);
+    //console.log("req.session.user: ",req.session.user);
+    console.log("isauth: ",req.isAuthenticated());
     Item.find({}).exec((err,data) => {
             console.log(data);
             res.render("all",{list:data});
@@ -125,7 +147,18 @@ const saltRounds = 10;
 /////////////////PASSPORT STUFF/////////////////////////////////
 
 import passport from 'passport';
-let LocalStrategy = require('passport-local').Strategy
+let LocalStrategy = require('passport-local').Strategy;
+//server.use(require('cookie-parser')());
+//server.use(require('express-session'))({secret:'meh',resave:true,saveUninitialized:true});
+
+
+import session from 'express-session';
+server.use(session({
+        secret:"WORKjsdlfjsdlkfj",
+        resave:false,
+        saveUninitialized:true
+    }))
+
 server.use(passport.initialize());
 server.use(passport.session());
 
@@ -138,6 +171,14 @@ passport.deserializeUser(function(id,done){
         done(err,user);
     })
 })
+///apparently you have to define the stupid serializers before the routing stuff.
+server.get("/test", (req,res) => {
+    console.log("-------------------------");
+    console.log(req.user);
+    console.log(req.isAuthenticated());
+    res.send("....");
+
+});
 
 passport.use(new LocalStrategy(
     (username,password,done) => {
@@ -160,7 +201,7 @@ passport.use(new LocalStrategy(
                 console.log("PWD:",password);
                 console.log("HASH:",user.password);
                 bcrypt.compare(password,user.password,(err,res) =>{
-                    console.log("bad pwd, ",err);
+                    console.log("auth?: ",res);
                     if(!res){
                             return done(null,false,{message:"bad pwd"});
                     }
